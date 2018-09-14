@@ -4,7 +4,6 @@ now = datetime.datetime.now()
 
 def main():
     pygame.init()
-    pygame.display.init()
 
 class Clock():
     def __init__(self):
