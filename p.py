@@ -4,39 +4,41 @@ from datetime import timedelta, datetime
 from math import sin, cos, pi
 pygame.init
 
-
-size = width, height = 500,500
+size = width, height = 1000,600
 black = 0, 0, 0
 white = 255, 255, 255
-center = 250
-radius = 150
-
+center = 150
+radius = 100
+dHours = 5
 
 class Clock():
-    def __init__(self, type, deltahours, center, radius):
+    def __init__(self, deltahours, center, radius):
         self.c = center
         self.r = radius
         self.type = type
         self.delta = timedelta(hours = deltahours)
     def drawHands(self):
-        if self.type == "basic":
+        T = datetime.timetuple(datetime.utcnow()-self.delta)
+        x,x,x,h,m,s,x,x,x = T
+        print(str(h) +":" + str(m))
+        # get time
 
-            T = datetime.timetuple(datetime.utcnow()-self.delta)
-            x,x,x,h,m,s,x,x,x = T
-            print(str(h) +":" + str(m))
+        angle = -pi/2 + pi/6 * (h + m/60.0)
+        x, y = (cos(angle)*self.r*2/3) + self.c, (sin(angle)*self.r*2/3) + self.c
+        pygame.draw.line(screen, black, (self.c, self.c), (x, y), 3)
+        # draw the hour handle
 
-            angle1 = -pi/2 + pi/6 * ((h+7) + m/60.0)
-            x, y = (cos(angle1)*self.r*2/3) + self.c, (sin(angle1)*self.r*2/3) + self.c
-            pygame.draw.line(screen, (100, 0, 0), (self.c, self.c), (x, y), 2)
-            # draw the hour handle
+        angle = -pi/2 + pi/30 * (m + s/60.0)
+        x, y = (cos(angle)*(self.r-10)) + self.c, (sin(angle)*(self.r-10)) + self.c
+        # print("angle = "+ str(angle) +" x and y = "+ str(x1) +" "+str(y1))
+        pygame.draw.line(screen, black, (self.c, self.c), (x, y), 2)
+        # draw the minute handle
 
-            angle = -pi/2 + pi/30 * (m + s/60.0)
-            x, y = (cos(angle)*(self.r-5)) + self.c, (sin(angle)*(self.r-5)) + self.c
-            # print("angle = "+ str(angle) +" x and y = "+ str(x1) +" "+str(y1))
-            pygame.draw.line(screen, (255, 0, 0), (self.c, self.c), (x, y), 2)
-             # draw the minute handle
-        else:
-            print("not basic")
+        angle = -pi/2 + pi/30 * s
+        x, y = cos(angle)*(self.r*2/3) + self.c,sin(angle)*(self.r*2/3) + self.c
+        pygame.draw.line(screen, (255, 0, 0), (self.c, self.c), (x, y), 1)
+        # draw the second handle
+
     def redraw(self):
         pygame.draw.circle(screen, black, (self.c, self.c), self.r, 3)
         start = pi/2              # 12h is at pi/2
@@ -47,34 +49,34 @@ class Clock():
             pygame.draw.circle(screen, (0, 0, 0), (int(x), int(y)), 5, 0)
         self.drawHands()
 
-deltahours = 0
-def main(argv=None):
-    if argv is None:
-       argv = sys.argv
-    if len(argv) > 2:
-       try:
-           deltahours = int(argv[1])
-           sImage = (argv[2] == 'True')
-           w = int(argv[3])
-           h = int(argv[4])
-           t = (argv[5] == 'True')
-       except ValueError:
-           print ("A timezone is expected.")
-           return 1
-    else:
-       deltahours = 3
-       sImage = True
-       w = h = 400
-       t = False
+# def main(argv=None):
+#     if argv is None:
+#        argv = sys.argv
+#     if len(argv) > 2:
+#        try:
+#            deltahours = int(argv[1])
+#            sImage = (argv[2] == 'True')
+#            w = int(argv[3])
+#            h = int(argv[4])
+#            t = (argv[5] == 'True')
+#        except ValueError:
+#            print ("A timezone is expected.")
+#            return 1
+#     else:
+#        deltahours = 3
+#        sImage = True
+#        w = h = 400
+#        t = False
+#
+#     root = Tk()
+#     root.geometry ('+0+0')
+#     # deltahours: how far are you from utc?
+#     # Sometimes the clock may be run from another timezone ...
+#     #clock(root,deltahours,sImage,w,h,t)
+#
+#     root.mainloop()
 
-    root = Tk()
-    root.geometry ('+0+0')
-    # deltahours: how far are you from utc?
-    # Sometimes the clock may be run from another timezone ...
-    #clock(root,deltahours,sImage,w,h,t)
-
-    root.mainloop()
-clock = Clock("basic", deltahours, center, radius)
+clock = Clock(dHours, center, radius)
 screen = pygame.display.set_mode(size)
 screen.fill((white))
 
