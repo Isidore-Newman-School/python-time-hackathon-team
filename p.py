@@ -1,8 +1,10 @@
-import sys, pygame
+import sys, pygame, pygame.font
 from time import localtime
 from datetime import timedelta, datetime
 from math import sin, cos, pi
 pygame.init
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
 
 size = width, height = 1000,600
 black = 0, 0, 0
@@ -76,6 +78,8 @@ class Clock():
 #
 #     root.mainloop()
 
+text = myfont.render("Clock", True, black)
+
 clock = Clock(dHours, center, radius)
 screen = pygame.display.set_mode(size)
 screen.fill((white))
@@ -85,4 +89,5 @@ while 1:
         if event.type == pygame.QUIT: sys.exit()
     screen.fill((white))
     clock.redraw()
+    screen.blit(text, (600, 300))
     pygame.display.flip()
